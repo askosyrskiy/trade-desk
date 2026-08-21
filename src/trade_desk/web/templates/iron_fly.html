@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Captain's Log — trade-desk</title>
+    <link rel="stylesheet" href="/static/desk.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div>
+        <p class="eyebrow">trade-desk / {{ model.strategy | default("spx-iron-fly") }}</p>
+        <h1>Captain's Log</h1>
+      </div>
+      <div class="meta">
+        <span class="pill">mode {{ model.mode }}</span>
+        <span class="pill">{{ model.broker }}</span>
+        {% if model.auto_refresh %}<span class="pill on">auto refresh</span>{% endif %}
+        {% if model.sample %}<span class="pill warn">sample data</span>{% endif %}
+      </div>
+    </header>
+
+    <section class="strip">
+      <article class="last">
+        <p class="label">Last price</p>
+        <p class="price">{{ "%.2f"|format(model.last_price) }}</p>
+      </article>
+      <article>
+        <p class="label">Watch</p>
+        <p class="num">{{ "{:,.1f}".format(model.watch_spot) }}</p>
+        <p class="sub">Add {{ model.watch_add | int }} · {{ "%+.2f"|format(model.watch_var) }}</p>
+      </article>
+      <article>
+        <p class="label">Next move</p>
+        <p class="num">{{ "{:,.1f}".format(model.next_spot) }}</p>
+        <p class="sub">Add {{ model.next_add | int }} · {{ "%+.2f"|format(model.next_var) }}</p>
+      </article>
+      <article>
+        <p class="label">ATM / wings</p>
+        <p class="num">{{ model.atm_strike | int }}</p>
+        <p class="sub">{{ model.wings }} / {{ model.wings }}</p>
+      </article>
+      <article>
+        <p class="label">Max opp ($)</p>
+        <p class="num">{{ "{:,.0f}".format(model.max_opp) }}</p>
+        <p class="sub">Remaining {{ "{:,.0f}".format(model.remaining_opp) }}</p>
+      </article>
+      <article>
+        <p class="label">Close used</p>
+        <p class="num">{{ "%.1f"|format(model.used_close_pct) }}%</p>
+        <p class="sub">BTC remaining {{ model.btc_remaining_pct | int }}%</p>
+      </article>
+    </section>
+
+    <p class="hint">
+      Semi-manual: Add / Close will confirm an intent once the engine can route.
+      They do not send orders yet.
+    </p>
+
+    <div class="actions">
+      <button type="button" disabled>Add watch</button>
+      <button type="button" disabled>Add next</button>
+      <button type="button" class="danger" disabled>Flatten</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Fly</th>
+          <th>Strike</th>
+          <th>Status</th>
+          <th>Put</th>
+          <th>Call</th>
+          <th>STO</th>
+          <th>BTC act</th>
+          <th>BTC est</th>
+          <th>Net</th>
+          <th>Max</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for fly in model.flies %}
+        <tr class="{{ fly.status }}">
+          <td>F{{ fly.slot }}</td>
+          <td>{% if fly.strike %}{{ fly.strike | int }}{% endif %}</td>
+          <td>{{ fly.status }}</td>
+          <td>{% if fly.put_wing %}{{ fly.put_wing }}{% endif %}</td>
+          <td>{% if fly.call_wing %}{{ fly.call_wing }}{% endif %}</td>
+          <td>{% if fly.sto is not none %}{{ "%.2f"|format(fly.sto) }}{% endif %}</td>
+          <td>{% if fly.btc_actual is not none %}{{ "%.2f"|format(fly.btc_actual) }}{% endif %}</td>
+          <td>{% if fly.btc_est is not none %}{{ "%.2f"|format(fly.btc_est) }}{% endif %}</td>
+          <td class="{% if fly.net is not none and fly.net < 0 %}neg{% elif fly.net is not none %}pos{% endif %}">
+            {% if fly.net is not none %}{{ "%.2f"|format(fly.net) }}{% endif %}
+          </td>
+          <td>{% if fly.max_loss is not none %}{{ fly.max_loss | int }}{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

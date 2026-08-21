@@ -1,3 +1,22 @@
+# trade-desk
+.env
+.env.*
+!.env.example
+data/
+fills/
+logs/
+*.pem
+*.key
+.DS_Store
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

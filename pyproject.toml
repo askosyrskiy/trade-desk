@@ -1,0 +1,28 @@
+[project]
+name = "trade-desk"
+version = "0.1.0"
+description = "Multi-strategy, multi-broker trading desk. Strategies and brokers plug into one engine."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+web = ["fastapi>=0.115", "uvicorn[standard]>=0.32", "jinja2>=3.1"]
+dev = ["pytest>=8.3"]
+
+[project.scripts]
+trade-desk = "trade_desk.web.app:main"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+trade_desk = ["web/templates/*.html", "web/static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

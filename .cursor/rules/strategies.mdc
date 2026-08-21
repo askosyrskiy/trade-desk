@@ -1,0 +1,9 @@
+---
+description: Strategy packages emit intents and view models, not broker orders
+globs: src/trade_desk/strategies/**/*.py
+alwaysApply: false
+---
+
+# Strategies
+
+Implement `trade_desk.strategy.port.Strategy`. Emit `Intent`s (`add`, `close`, `flatten`), not `MultilegOrder`s. Keep rule math in pure functions with tests. Do not import `trade_desk.brokers`. Update `docs/strategies/<id>/` when rules change. Unfrozen interview ambiguities belong in `docs/decisions/`, not in guessed constants.
